@@ -1,0 +1,731 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Equipment registry API",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "description": "Generated server url",
+      "url": "http://localhost:9090"
+    }
+  ],
+  "tags": [
+    {
+      "description": "API для работы с реестром техники",
+      "name": "Equipment Registry"
+    }
+  ],
+  "paths": {
+    "/types": {
+      "post": {
+        "operationId": "addNewEquipmentType",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EquipmentType"
+              }
+            }
+          },
+          "description": "данные добавляемого вида техники",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentType"
+                }
+              }
+            },
+            "description": "Вид техники добавлен"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "BAD_REQUEST",
+                  "reason": "Incorrectly made request.",
+                  "message": "Field: name. Error: must not be blank. Value: null",
+                  "timestamp": "2022-09-07 09:10:50"
+                }
+              }
+            },
+            "description": "Запрос составлен некорректно"
+          }
+        },
+        "summary": "Добавление нового вида техники",
+        "tags": [
+          "Equipment Registry"
+        ]
+      }
+    },
+    "/types/{typeId}/lines": {
+      "post": {
+        "operationId": "addNewLine",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductLine"
+              }
+            }
+          },
+          "description": "данные добавляемой линейки",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductLine"
+                }
+              }
+            },
+            "description": "Линейка добавлена"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "BAD_REQUEST",
+                  "reason": "Incorrectly made request.",
+                  "message": "Field: name. Error: must not be blank. Value: null",
+                  "timestamp": "2022-09-07 09:10:50"
+                }
+              }
+            },
+            "description": "Запрос составлен некорректно"
+          }
+        },
+        "summary": "Добавление новой линейки",
+        "tags": [
+          "Equipment Registry"
+        ]
+      }
+    },
+     "/types/{typeId}/lines/{lineId}/models": {
+      "post": {
+        "operationId": "addNewModel",
+        "parameters": [
+          {
+            "description": "id вида техники",
+            "in": "path",
+            "name": "typeId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "description": "id линейки",
+            "in": "path",
+            "name": "lineId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                  "models": {
+                "oneOf": [
+               {
+                "$ref": "#/components/schemas/VacuumCleanerModel"
+                },
+                
+               {
+                  "$ref": "#/components/schemas/PcModel"
+                },
+               {
+                  "$ref": "#/components/schemas/TvModel"
+                },
+                 {
+                  "$ref": "#/components/schemas/SmartphoneModel"
+                },
+                {
+                  "$ref": "#/components/schemas/RefrigeratorModel"
+                }
+                ]
+                  }
+              }
+            }
+          },
+          "description": "данные новой модели",
+          "required": true
+        },
+          "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "models": {
+                 "oneOf": [
+               {
+                "$ref": "#/components/schemas/VacuumCleanerModel"
+                },
+                
+               {
+                  "$ref": "#/components/schemas/PcModel"
+                },
+               {
+                  "$ref": "#/components/schemas/TvModel"
+                },
+                 {
+                  "$ref": "#/components/schemas/SmartphoneModel"
+                },
+                {
+                  "$ref": "#/components/schemas/RefrigeratorModel"
+                }
+                ]
+                }
+                }
+              }
+            },
+            "description": "Модель добавлена"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "BAD_REQUEST",
+                  "reason": "Incorrectly made request.",
+                  "message": "Field: title. Error: must not be blank. Value: null",
+                  "timestamp": "2022-09-07 09:10:50"
+                }
+              }
+            },
+            "description": "Запрос составлен некорректно"
+          }
+        },
+        "summary": "Добавление новой модели в линейку",
+        "tags": [
+          "Equipment Registry"
+        ]
+      }
+    },
+    "/types/{typeId}/models/sorted": {
+      "get": {
+        "description": "Эндпоинт возвращает сортировку моделей по алфавиту и по стоимости",
+        "operationId": "getSortedByPriceAndAlphabet",
+        "parameters": [
+          {
+            "description": "цена по возрастанию - asc, по убыванию - desc",
+            "in": "query",
+            "name": "price",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "models": {
+                     "oneOf": [
+               {
+                "$ref": "#/components/schemas/VacuumCleanerModel"
+                },
+                
+               {
+                  "$ref": "#/components/schemas/PcModel"
+                },
+               {
+                  "$ref": "#/components/schemas/TvModel"
+                },
+                 {
+                  "$ref": "#/components/schemas/SmartphoneModel"
+                },
+                {
+                  "$ref": "#/components/schemas/RefrigeratorModel"
+                }
+                ]
+                  }
+                }
+              }
+            },
+            "description": "Модели отсортированы по алфавиту и по цене"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "BAD_REQUEST",
+                  "reason": "Incorrectly made request.",
+                  "message": "Failed to convert value of type java.lang.String to required type int; nested exception is java.lang.NumberFormatException: For input string: ad",
+                  "timestamp": "2022-09-07 09:10:50"
+                }
+              }
+            },
+            "description": "Запрос составлен некорректно"
+          }
+        },
+        "summary": "Сортировка моделей",
+        "tags": [
+          "Equipment Registry"
+        ]
+      }
+    },
+    "/types/{typeId}/models/filtered": {
+      "get": {
+        "description": "Поиск (по наименованию) должен быть без учета регистра букв.\n В случае, если по заданным фильтрам не найдено ни одной модели, возвращает пустой список",
+        "operationId": "findByNameAndFilterByParams",
+        "parameters": [
+          {
+            "description": "текст для поиска в наименовании",
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "цвет",
+            "in": "query",
+            "name": "colour",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ценa от",
+            "in": "query",
+            "name": "priceFrom",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ценa до",
+            "in": "query",
+            "name": "priceTo",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "память",
+            "in": "query",
+            "name": "memory",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+           {
+            "description": "камера",
+            "in": "query",
+            "name": "camera",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "количество режимов",
+            "in": "query",
+            "name": "regimeCount",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+           {
+            "description": "объем пылесборника",
+            "in": "query",
+            "name": "collectorVolume",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "количество дверей",
+            "in": "query",
+            "name": "doorCount",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+           {
+            "description": "компрессор",
+            "in": "query",
+            "name": "compressor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "категория",
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+           {
+            "description": "процессор",
+            "in": "query",
+            "name": "processor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "категория",
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+           {
+            "description": "технология",
+            "in": "query",
+            "name": "technology",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "models": {
+                    "oneOf": [
+               {
+                "$ref": "#/components/schemas/VacuumCleanerModel"
+                },
+                
+               {
+                  "$ref": "#/components/schemas/PcModel"
+                },
+               {
+                  "$ref": "#/components/schemas/TvModel"
+                },
+                 {
+                  "$ref": "#/components/schemas/SmartphoneModel"
+                },
+                {
+                  "$ref": "#/components/schemas/RefrigeratorModel"
+                }
+                ]
+                  }
+                }
+              }
+            },
+            "description": "Модели найдены"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "BAD_REQUEST",
+                  "reason": "Incorrectly made request.",
+                  "message": "Event must be published",
+                  "timestamp": "2022-09-07 09:10:50"
+                }
+              }
+            },
+            "description": "Запрос составлен некорректно"
+          }
+        },
+        "summary": "Получение моделей с возможностью фильтрации",
+        "tags": [
+          "Equipment Registry"
+        ]
+      }
+    }
+    },
+  "components": {
+    "schemas": {
+      "EquipmentType": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Название вида техники"
+          }
+        }
+      },
+      "ProductLine": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Название линейки"
+          },
+          "country": {
+             "type": "string",
+            "description": "Страна производитель"
+          }, 
+          "brand": {
+             "type": "string",
+            "description": "Фирма производитель"
+          },
+          "isAvailableOnline": {
+             "type": "boolean",
+            "description": "Возможность заказа онлайн(да/нет)"
+          },
+          "isInInstalment": {
+             "type": "boolean",
+            "description": "Возможность оформления рассрочки(да/нет)"
+          },
+          "models": {
+            "type": "array",
+            "description": "модели в наличии (выборка из моделей, которые представлены в виде справочника)",
+            "example": [
+              1,
+              2,
+              3
+            ],
+            "model": {
+              "type": "integer",
+              "description": "Идентификаторы моделей в наличии",
+              "format": "int64"
+            }
+          }
+        },
+        "description": "Данные для добавления новой линейки"
+      },
+      "SmartphoneModel": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "наименование"
+          },
+          "colour": {
+            "type": "string",
+            "description": "цвет"
+          },
+          "size": {
+           "type": "string",
+            "description": "Размер"
+          },
+          "price": {
+           "type": "string",
+            "description": "Цена"
+          },
+          "isAvailable": {
+            "type": "boolean",
+            "description": "Наличие товара"
+          },
+          "memory": {
+            "type": "integer",
+            "description": "Память"
+          },
+          "cameraCount": {
+            "type": "integer",
+            "description": "Камера"
+          },
+          "type": {
+            "type": "integer",
+            "description": "Идентификатор линейки"
+          }
+        },
+        "description": "Модель телефона"
+      },
+      "TvModel": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "наименование"
+          },
+          "colour": {
+            "type": "string",
+            "description": "цвет"
+          },
+          "size": {
+           "type": "string",
+            "description": "Размер"
+          },
+          "price": {
+           "type": "string",
+            "description": "Цена"
+          },
+          "category": {
+           "type": "string",
+            "description": "Категория"
+          },
+          "technology": {
+           "type": "string",
+            "description": "Технология"
+          },
+          "isAvailable": {
+            "type": "boolean",
+            "description": "Наличие товара"
+          },
+          "type": {
+            "type": "integer",
+            "description": "Идентификатор линейки"
+          }
+        },
+        "description": "Модель телевизора"
+      },
+      "PcModel": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "наименование"
+          },
+          "colour": {
+            "type": "string",
+            "description": "цвет"
+          },
+          "size": {
+           "type": "string",
+            "description": "Размер"
+          },
+          "price": {
+           "type": "string",
+            "description": "Цена"
+          },
+          "category": {
+           "type": "string",
+            "description": "Категория"
+          },
+          "processor": {
+           "type": "string",
+            "description": "Процессор"
+          },
+          "isAvailable": {
+            "type": "boolean",
+            "description": "Наличие товара"
+          },
+          "type": {
+            "type": "integer",
+            "description": "Идентификатор линейки"
+          }
+        },
+        "description": "Модель компьютера"
+      },
+       "RefrigeratorModel": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "наименование"
+          },
+          "colour": {
+            "type": "string",
+            "description": "цвет"
+          },
+          "size": {
+           "type": "string",
+            "description": "Размер"
+          },
+          "price": {
+           "type": "string",
+            "description": "Цена"
+          },
+          "doorCount": {
+           "type": "integer",
+            "description": "Количество дверей"
+          },
+          "compressor": {
+           "type": "string",
+            "description": "Компрессор"
+          },
+          "isAvailable": {
+            "type": "boolean",
+            "description": "Наличие товара"
+          },
+          "type": {
+            "type": "integer",
+            "description": "Идентификатор линейки"
+          }
+        },
+        "description": "Модель холодильника"
+      },
+      "VacuumCleanerModel": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "наименование"
+          },
+          "colour": {
+            "type": "string",
+            "description": "цвет"
+          },
+          "size": {
+           "type": "string",
+            "description": "Размер"
+          },
+          "price": {
+           "type": "string",
+            "description": "Цена"
+          },
+          "collectorVolume": {
+           "type": "string",
+            "description": "Объем пылесборника"
+          },
+          "regimeCount": {
+           "type": "integer",
+            "description": "Количество режимов"
+          },
+          "isAvailable": {
+            "type": "boolean",
+            "description": "Наличие товара"
+          },
+          "type": {
+            "type": "integer",
+            "description": "Идентификатор линейки"
+          }
+        },
+        "description": "Модель холодильника"
+      }
+    }
+  }
+}

@@ -5,7 +5,6 @@ import reestr.model.EquipmentLine;
 import java.util.List;
 
 public interface EquipmentLineService {
-    EquipmentLine create(EquipmentLine equipmentLine);
-
-    List<EquipmentLine> getAllTypes();
+    EquipmentLine addNewLine(EquipmentLine equipmentLine, Integer typeId);
+    List<EquipmentLine> getAllLines();
 }

@@ -1,5 +1,6 @@
 package reestr.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,10 @@ public class EquipmentLine {
     private Boolean isInInstalment; // возможность оформления рассрочки(да/нет)
     @OneToMany(mappedBy = "line")
     private Set<ModelDetails> models; // модели в наличии (выборка из моделей, которые представлены в виде справочника)
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "type_id")
+    private EquipmentType type; // к какому виду техники относится
 
     // Наименование, Страна производитель, Фирма производитель, возможность заказа онлайн(да/нет),
     // возможность оформления рассрочки(да/нет), модели в наличии (выборка из моделей, которые представлены в виде справочника).
